@@ -5,8 +5,6 @@
   <!-- SEO相关 -->
   
     
-      <meta name="robots" content="noindex,follow">
-    
   
   <!-- 渲染优化 -->
   <meta http-equiv='x-dns-prefetch-control' content='on' />
@@ -24,7 +22,7 @@
 
   <!-- 页面元数据 -->
   
-  <title>Archive - 阿展的炼丹之旅</title>
+  <title>MaskTrack-RCNN：Video Instance Segmentation - 阿展的炼丹之旅</title>
   
 
   
@@ -104,7 +102,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   <body>
     
 
-<header id="l_header" class="l_header auto shadow blur " style='opacity: 0' >
+<header id="l_header" class="l_header auto shadow blur show" style='opacity: 0' >
   <div class='container'>
   <div id='wrapper'>
     <div class='nav-sub'>
@@ -355,7 +353,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       <div id="l_cover">
   
     
-        <div id="half" class='cover-wrapper  dock' style="display: ;">
+        <div id="full" class='cover-wrapper post dock' style="display: none;">
           
             <div class='cover-bg lazyload placeholder' data-bg="https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture"></div>
           
@@ -431,47 +429,407 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
           
 
 <div class='l_main'>
-	
-	  <article id="arc" class="post article white-box reveal shadow">
-			
-			
-				
-				
-					
-						
-						<h2>2021</h2>
-					
-						<div class='timenode'>
-								<a class="meta" href="/2021/08/04/MaskTrack-RCNN%EF%BC%9AVideo-Instance-Segmentation/">
-									<time>08-04</time>
-									
-										MaskTrack-RCNN：Video Instance Segmentation
-									
-									
-									
-									
-								</a>
-						</div>
-				
-			
-				
-				
-					
-						<div class='timenode'>
-								<a class="meta" href="/2021/08/04/hello-world/">
-									<time>08-04</time>
-									
-										Hello World
-									
-									
-									
-									
-								</a>
-						</div>
-				
-			
-	  </article>
-	
+  <article class="article post white-box reveal md shadow article-type-post" id="post" itemscope itemprop="blogPost">
+  
+
+
+  
+  <div class="article-meta" id="top">
+    
+    
+    
+      <h1 class="title">
+        MaskTrack-RCNN：Video Instance Segmentation
+      </h1>
+      <div class='new-meta-box'>
+        
+          
+            
+<div class='new-meta-item author'>
+  <a class='author' href="/" rel="nofollow">
+    <img no-lazy src="">
+    <p>请设置文章作者</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+
+          
+        
+          
+            <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：Aug 4, 2021</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  <div class="new-meta-item browse leancloud">
+    <a class='notlink'>
+      
+      <div id="lc-pv" data-title="MaskTrack-RCNN：Video Instance Segmentation" data-path="/2021/08/04/MaskTrack-RCNN%EF%BC%9AVideo-Instance-Segmentation/">
+        <i class="fas fa-eye fa-fw" aria-hidden="true"></i>
+        <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span>
+        次浏览
+      </div>
+    </a>
+  </div>
+
+
+          
+        
+      </div>
+    
+  </div>
+
+
+  
+  
+  <h1 id="MaskTrack-RCNN《Video-Instance-Segmentation》"><a href="#MaskTrack-RCNN《Video-Instance-Segmentation》" class="headerlink" title="MaskTrack-RCNN《Video Instance Segmentation》"></a>MaskTrack-RCNN《Video Instance Segmentation》</h1><h1 id="论文解读"><a href="#论文解读" class="headerlink" title="论文解读"></a>论文解读</h1><p>论文地址：<a target="_blank" rel="noopener" href="http://openaccess.thecvf.com/content_ICCV_2019/papers/Yang_Video_Instance_Segmentation_ICCV_2019_paper.pdf">http://openaccess.thecvf.com/content_ICCV_2019/papers/Yang_Video_Instance_Segmentation_ICCV_2019_paper.pdf</a></p>
+<p>代码地址：<a target="_blank" rel="noopener" href="https://github.com/">https://github.com/ youtubevos/MaskTrackRCNN</a></p>
+<p>数据集地址：[<a target="_blank" rel="noopener" href="https://competitions.codalab.org/competitions/2898">https://competitions.codalab.org/competitions/2898</a></p>
+<h3 id="相似任务区别"><a href="#相似任务区别" class="headerlink" title="相似任务区别"></a>相似任务区别</h3><table>
+<thead>
+<tr>
+<th>任务</th>
+<th>定义</th>
+<th>区别</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VSS（Video Semantic Segmentation）</td>
+<td>在每一帧进行语义分割</td>
+<td>没有考虑不同帧之间目标实例的匹配</td>
+</tr>
+<tr>
+<td>VOS (Video Object Segmentation)</td>
+<td>半监督：给定第一帧的mask，将目标从视频背景中分离出来 无监督：不需要给第一帧mask，不需要区分实例，只需要分分割出单个目标即可</td>
+<td>没有考虑实例信息</td>
+</tr>
+<tr>
+<td>VOD (Video Object Detection)</td>
+<td>检测目标，但是不需要分割</td>
+<td>没有分割和追踪</td>
+</tr>
+<tr>
+<td>VOT（video Object Tracking)</td>
+<td>DBT(Detection-Based Tracking):在每一帧进行目标检测，再利用目标检测的结果来进行目标跟踪 DFT(Detection-Free Tracking):在第一帧给定初始框，无需检测器进行追踪</td>
+<td>只进行检测，没有分割</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="要解决什么问题"><a href="#要解决什么问题" class="headerlink" title="要解决什么问题?"></a>要解决什么问题?</h2><ol>
+<li>实例分割仅局限于图像领域，未扩展到视频领域。</li>
+<li>没有合适的针对视频实例分割的数据集（无benchmark）。</li>
+<li>相较于传统图像实例分割，视频实例分割要考虑在不同帧之间实例的追踪。</li>
+</ol>
+<hr>
+<h2 id="如何解决该问题？"><a href="#如何解决该问题？" class="headerlink" title="如何解决该问题？"></a>如何解决该问题？</h2><ol>
+<li>提出了新的计算机视觉任务：视频实例分割VIS</li>
+</ol>
+<blockquote>
+<p>目标是同时检测、分割和追踪视频中的实例。</p>
+</blockquote>
+<p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled.png"></p>
+<ol>
+<li>提出了大规模基准数据集YouTube-VIS，包含2883个高分辨率YouTube视频，40个种类，131k个高质量实例掩码标注。</li>
+<li>提出了新的算法MaskTrackRCNN，在Mask R-CNN的基础上添加追踪分支。预测的实例信息被保存在外部存储器中，之后会和其它帧的实例进行匹配。</li>
+</ol>
+<hr>
+<h2 id="具体实现细节？"><a href="#具体实现细节？" class="headerlink" title="具体实现细节？"></a>具体实现细节？</h2><h3 id="1-首先定义任务VIS："><a href="#1-首先定义任务VIS：" class="headerlink" title="(1) 首先定义任务VIS："></a>(1) 首先定义任务VIS：</h3><ol>
+<li>给定预定义类别集合C， K是种类数量</li>
+</ol>
+<p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%201.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%201.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%201.png"></p>
+<ol>
+<li><p>给定视频序列T帧，假设该视频序列有N个属于C的目标</p>
+</li>
+<li><p>对于每个物体i，ci表示其类别</p>
+<p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%202.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%202.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%202.png"></p>
+</li>
+<li><p>对于每个目标i，下式表示其在视频序列中的分割掩码，p属于[1,T]，q属于[p,T]，分别表示开始和结束时间</p>
+<p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%203.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%203.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%203.png"></p>
+</li>
+<li><p>对于每一个视频序列，模型生成H个实例的预测信息，对于其中一个实例j，预测信息应包括：类别，置信度，掩码序列。（在最后生成预测结果时，p取第一帧，q取最后一一帧，如果某些帧该实例未存在，则该帧mask为NULL</p>
+</li>
+</ol>
+<p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%204.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%204.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%204.png"></p>
+<p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%205.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%205.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%205.png"></p>
+<p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%206.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%206.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%206.png"></p>
+<h3 id="2-评测标准"><a href="#2-评测标准" class="headerlink" title="(2) 评测标准"></a>(2) 评测标准</h3><p>使用AP和AR进行评测，但IOU的计算稍有不同，因为是针对一个视频序列进行评测，因此把某个实例GT的mask序列和预测的mask序列都扩展到从视频帧开始到结束的时间段，如果某一帧不存在，就padding为0。</p>
+<p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%207.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%207.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%207.png"></p>
+<h3 id="3-YouTube-VIS"><a href="#3-YouTube-VIS" class="headerlink" title="(3) YouTube-VIS"></a>(3) YouTube-VIS</h3><ul>
+<li>每个视频长度为3-6s，速度为30fps，每1s取5帧图像，也就是每个视频大约15-30张图像。</li>
+<li>共4453个视频。</li>
+<li>总共有40个种类，131k个实例标注。</li>
+<li>在YouTube-VOS数据集的基础上采样并重新标注得到的。</li>
+</ul>
+<h3 id="4-MaskTrack-R-CNN算法"><a href="#4-MaskTrack-R-CNN算法" class="headerlink" title="(4) MaskTrack R-CNN算法"></a>(4) MaskTrack R-CNN算法</h3><p>x<img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%208.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%208.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%208.png"></p>
+<ul>
+<li>在Mask R-CNN原有的分类、回归和掩码生成分支上，增加了第四个分支，利用外部的存储空间（externel memory)来追踪不同帧之间的实例。追踪分支主要是利用物体的外观相似性（appearance similarity）来进行实例之间的匹配。同时，本文也提出了一种简单却有效的方法来结合其它线索，比如语义一致性（semantic consistency）和空间关联（spatial correlation)。</li>
+<li>推理阶段使用的在线推理的方法（只知道当前帧前面帧的信息，而不知道后面帧的信息）。</li>
+</ul>
+<hr>
+<ol>
+<li>追踪分支</li>
+</ol>
+<blockquote>
+<p>目的：给每个候选框分配实例标签（给实例标一个序号，以区分不同实例）。</p>
+</blockquote>
+<ul>
+<li><p>假设已经有了N个确认的实例，给新的候选框分配标签就只有两种可能</p>
+<p>(a) 新的候选框就是N个实例之一</p>
+<p>(b) 新的候选框是未曾出现的实例</p>
+</li>
+<li><p>从而将问题转化为：多标签分类问题（N+1类，N代表已经确认的实例，1代表未曾出现的实例，用数字0表示），将标签分配给候选框的概率可以定义为下式（衡量两个实例的相似度）</p>
+</li>
+</ul>
+<p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%209.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%209.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%209.png"></p>
+<ul>
+<li>其中，fi代表新的候选框的特征，fj代表已经确认的N个候选框中第j个候选框的特征，它们都是一维向量（追踪分支用两层全连接层实现，输入是候选框的RoIAlign特征，输出是新的特征）。既然之前帧已经识别出的实例的特征已经经过计算，可以利用外部空间来存储其新特征提高效率。</li>
+<li>当一个新的候选框被分配实例标签时，我们会动态更新外部空间（如果候选框已经属于某个存在的实例，我们会将memory中的该实例的特征更新，换成最新的）。</li>
+<li>如果候选物体被分配为标签0，那么将他的特征嵌入memory中，并将所有已经识别出的实例标签增加1。loss</li>
+</ul>
+<hr>
+<ul>
+<li>该分支的损失使用交叉熵损失，yi是GT</li>
+</ul>
+<p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%2010.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%2010.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%2010.png"></p>
+<ul>
+<li>总体网络的损失：</li>
+</ul>
+<p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%2011.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%2011.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%2011.png"></p>
+<hr>
+<ol>
+<li>训练过程（训练追踪分支）</li>
+</ol>
+<blockquote>
+<p>随机从一个视频中选取两帧，第一帧为参考帧，第二帧为查询帧</p>
+</blockquote>
+<ul>
+<li>reference frame 参考帧：不通过网络得到候选框，而是直接从GT的实例区域中提取特征，将他们保存到外部空间</li>
+<li>query frame 查询帧：在第一阶段产生候选框，将IOU大于70%的候选框作为正样本，送入追踪分支，进行实例匹配。</li>
+</ul>
+<hr>
+<ol>
+<li>结合其它线索</li>
+</ol>
+<blockquote>
+<p>仅用外观特征相似度来计算实例匹配是否不太够，那么能否结合其它视觉线索，比如语义一致性、空间关联和检测置信度共同作为匹配标准？</p>
+</blockquote>
+<ul>
+<li>具体来说对于一个候选框i，bi、ci、si分别代表预测的bbox，class和score。bn、cn代表匹配的在外部空间中的实例的bbox和class，那么就可以定义分配分数(pi在上面有定义）</li>
+</ul>
+<p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%2012.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%2012.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%2012.png"></p>
+<ul>
+<li>其中关于class的函数是一个脉冲函数，当类别相同时返回1，不同时返回0。</li>
+</ul>
+<p>注意，分配分数只适用于在测试阶段，训练时仍只使用外观相似度</p>
+<hr>
+<ol>
+<li>推理过程</li>
+</ol>
+<ul>
+<li>给出一个新的视频，外部空间设为空，已经识别出的实例个数设置为0。我们的方法会以online的方式顺序的处理每一帧。每一帧会产生很多预测的实例，这些实例先经过NMS（阈值为0.5），然后经过过滤的预测框会和之前帧产生的实例进行匹配。</li>
+</ul>
+<p>注意：为了防止歧义，匹配的实例是之前所有帧产生使的实例，而不仅仅是上一帧。</p>
+<ul>
+<li>在预测第一帧时，其所有实例都会被送入memory中存储，对于我们的方法，一个标签可能会被分配给多个预测的实例，这个常识违背（一个视频中的每一个实例只能有一个），我们只保留得分最高的实例。</li>
+<li>当处理完所有帧，会产生一系列实例的预测，每个预测包含要给独一无二的实例标签、一个视频序列的二值分割图像和列别标签和检测置信度。我们将检测置信度取平均值作为整个视频序列中该实例的置信度，使用投票法获得该实例的类别。</li>
+</ul>
+<p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%2013.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%2013.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%2013.png"></p>
+<hr>
+<h1 id="效果如何？"><a href="#效果如何？" class="headerlink" title="效果如何？"></a>效果如何？</h1><h3 id="1-数据集划分"><a href="#1-数据集划分" class="headerlink" title="1. 数据集划分"></a>1. 数据集划分</h3><table>
+<thead>
+<tr>
+<th>集合</th>
+<th>数量</th>
+<th>性质</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>训练集</td>
+<td>2238</td>
+<td></td>
+</tr>
+<tr>
+<td>验证集</td>
+<td>302</td>
+<td>保证每个种类至少4个实例</td>
+</tr>
+<tr>
+<td>测试集</td>
+<td>343</td>
+<td>保证每个种类至少4个实例</td>
+</tr>
+</tbody></table>
+<h3 id="2-参数："><a href="#2-参数：" class="headerlink" title="2. 参数："></a>2. 参数：</h3><ul>
+<li>backbone：resnet-50-fpn（在coco上预训练）</li>
+<li>跟踪分支：两个全连接层（第一层将7<em>7</em>256的特征图→1024维向量，第二次将1024→1024）</li>
+<li>epochs：12</li>
+<li>lr：0.05 [8, 11]（缩小10倍）</li>
+<li>超参数：a：1，b：2，y：10</li>
+<li>输入图像大小：640*360</li>
+</ul>
+<h3 id="3-结果"><a href="#3-结果" class="headerlink" title="3. 结果"></a>3. 结果</h3><p>在单块nvidia 1080ti上推理速度可以达到20FPS</p>
+<p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%2014.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%2014.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%2014.png"></p>
+<h3 id="4-badcase分析："><a href="#4-badcase分析：" class="headerlink" title="4. badcase分析："></a>4. badcase分析：</h3><p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%2015.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%2015.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%2015.png"></p>
+<p>e：dear鹿在不同的姿势下其外形变换很大，算法将其视为两类不同的物体。</p>
+<p>d：在水箱中有很多🐟移动，互相形成遮挡，算法在第二帧和第三帧将两个互相遮挡的🐟视为了同一条🐟，影响了后续的识别。</p>
+<h3 id="5-消融实验："><a href="#5-消融实验：" class="headerlink" title="5. 消融实验："></a>5. 消融实验：</h3><p><img src="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%2016.png" class="lazyload" data-srcset="https://gitee.com/gumengyihan/photo/raw/master//pic/Untitled%2016.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="MaskTrack-RCNN%EF%BC%9AVideo%20Instance%20Segmentation%20665c684dd5594646a53aaca569ed0d34/Untitled%2016.png"></p>
+<ul>
+<li>对不同视觉线索对该方法的影响做了消融实验，分别有：检测置信度，bbox的iou，类别一致性</li>
+</ul>
+<p>实验发现，iou和类别一致性影响最大(❓但是，明明看实验结果iou影响不大）</p>
+<ul>
+<li>解释：iou与空间联系有关，类别一致性提供了强有了的约束（一个视频序列中，一个实例的label应该不发生改变）。</li>
+<li>但是，过度依赖这些视觉线索会造成错误的预测，因此我们旨在测试阶段将其作为软限制，而不在训练阶段使用他们。</li>
+</ul>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文的贡献点主要在于提出了新的视觉任务。</p>
+
+  
+  
+    
+    <div class='footer'>
+      
+      
+      
+        <div class='copyright'>
+          <blockquote>
+            
+              
+                <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
+
+              
+            
+              
+                <p>本文永久链接是：<a href=http://example.com/2021/08/04/MaskTrack-RCNN%EF%BC%9AVideo-Instance-Segmentation/>http://example.com/2021/08/04/MaskTrack-RCNN%EF%BC%9AVideo-Instance-Segmentation/</a></p>
+              
+            
+          </blockquote>
+        </div>
+      
+      
+    </div>
+  
+  
+    
+
+
+  <div class='article-meta' id="bottom">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-08-04T20:11:45+08:00">
+  <a class='notlink'>
+    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：Aug 4, 2021</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://example.com/2021/08/04/MaskTrack-RCNN%EF%BC%9AVideo-Instance-Segmentation/&title=MaskTrack-RCNN：Video Instance Segmentation - 阿展的炼丹之旅&summary="
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://example.com/2021/08/04/MaskTrack-RCNN%EF%BC%9AVideo-Instance-Segmentation/&title=MaskTrack-RCNN：Video Instance Segmentation - 阿展的炼丹之旅&summary="
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qzone.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qzone.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://service.weibo.com/share/share.php?url=http://example.com/2021/08/04/MaskTrack-RCNN%EF%BC%9AVideo-Instance-Segmentation/&title=MaskTrack-RCNN：Video Instance Segmentation - 阿展的炼丹之旅&summary="
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+  </div>
+
+
+  
+  
+
+  
+    <div class="prev-next">
+      
+      
+        <a class='next' href='/2021/08/04/hello-world/'>
+          <p class='title'>Hello World<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+          <p class='content'>Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any ...</p>
+        </a>
+      
+    </div>
+  
+</article>
+
+
+  
+
+  <article class="post white-box reveal shadow" id="comments">
+    <p ct><i class='fas fa-comments'></i> 评论</p>
+    
+    <div id="valine_container" class="valine_thread">
+  <i class="fas fa-cog fa-spin fa-fw fa-2x"></i>
+</div>
+
+  </article>
+
+
+
+
+
+
 </div>
 <aside class='l_side'>
   
@@ -479,109 +837,28 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     
     
 
-<section class="widget blogger shadow desktop mobile">
-  <div class='content'>
-    
-      
-        <a class='avatar flat-box rectangle' href='/about/'>
-          <img no-lazy src='https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/Logo-NavBar@3x.png'/>
-        </a>
-      
-    
-    
-      <div class='text'>
-        
-        
-        
-          <p><span id="jinrishici-sentence">阿展的炼丹之旅</span></p>
-          <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
-        
-      </div>
-    
-    
-      <div class="social-wrapper">
-        
-          
-            <a href="/atom.xml"
-              class="social fas fa-rss flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-              
-            </a>
-          
-        
-          
-            <a href="mailto:me@xxx.com"
-              class="social fas fa-envelope flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-              
-            </a>
-          
-        
-          
-            <a href="https://github.com/volantis-x/"
-              class="social fab fa-github flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-              
-            </a>
-          
-        
-          
-            <a href="/"
-              class="social fas fa-headphones-alt flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-              
-            </a>
-          
-        
-      </div>
-    
-  </div>
-</section>
 
-  
 
-  
+  <section class="widget toc-wrapper shadow desktop mobile" id="toc-div" >
     
+  <header>
     
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
 
-  
 
-  
-    
-    
+    <div class='content'>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B8%E4%BC%BC%E4%BB%BB%E5%8A%A1%E5%8C%BA%E5%88%AB"><span class="toc-text">相似任务区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A6%81%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98"><span class="toc-text">要解决什么问题?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E8%AF%A5%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-text">如何解决该问题？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82%EF%BC%9F"><span class="toc-text">具体实现细节？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%A6%96%E5%85%88%E5%AE%9A%E4%B9%89%E4%BB%BB%E5%8A%A1VIS%EF%BC%9A"><span class="toc-text">(1) 首先定义任务VIS：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E8%AF%84%E6%B5%8B%E6%A0%87%E5%87%86"><span class="toc-text">(2) 评测标准</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-YouTube-VIS"><span class="toc-text">(3) YouTube-VIS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-MaskTrack-R-CNN%E7%AE%97%E6%B3%95"><span class="toc-text">(4) MaskTrack R-CNN算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%95%B0%E6%8D%AE%E9%9B%86%E5%88%92%E5%88%86"><span class="toc-text">1. 数据集划分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%8F%82%E6%95%B0%EF%BC%9A"><span class="toc-text">2. 参数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%BB%93%E6%9E%9C"><span class="toc-text">3. 结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-badcase%E5%88%86%E6%9E%90%EF%BC%9A"><span class="toc-text">4. badcase分析：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C%EF%BC%9A"><span class="toc-text">5. 消融实验：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a>
+    </div>
+  </section>
 
-  
-
-  
-    
-    
-
-<section class="widget qrcode shadow desktop mobile">
-  
-
-  <div class='content article-entry'>
-    
-      <img src='https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/qrcode/github@volantis.png'
-      
-        height='64px'
-      />
-    
-      <img src='https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/qrcode/github@volantis.png'
-      
-        height='64px'
-      />
-    
-  </div>
-</section>
 
   
 
 
 </aside>
+
 
 
 		  
@@ -590,21 +867,21 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 
 <script>
   window.pdata={}
-  pdata.ispage=false;
-  pdata.postTitle="";
+  pdata.ispage=true;
+  pdata.postTitle="MaskTrack-RCNN：Video Instance Segmentation";
   pdata.commentPath="";
   pdata.commentPlaceholder="";
   // header 这里无论是否开启pjax都需要
   var l_header=document.getElementById("l_header");
   
-  l_header.classList.remove("show");
+  l_header.classList.add("show");
   
   
     // cover
     var cover_wrapper=document.querySelector('.cover-wrapper');
     
-    cover_wrapper.id="half";
-    cover_wrapper.style.display="";
+    cover_wrapper.id="none";
+    cover_wrapper.style.display="none";
     
   
 </script>
